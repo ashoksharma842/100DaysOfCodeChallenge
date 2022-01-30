@@ -1,26 +1,33 @@
 
-enum LED {MANUAL = 10, AUTO, PROGRAM};
+enum LED {MANUAL_LED = 10, AUTO_LED, PROGRAM_LED};
+enum BUTTONS {MANUAL_BUTTON = 2, ENTER_BUTTON, AUTO_BUTTON, PROGRAM_BUTTON};
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(MANUAL, OUTPUT);
-  pinMode(AUTO, OUTPUT);
-  pinMode(PROGRAM, OUTPUT);
+  pinMode(MANUAL_LED, OUTPUT);
+  pinMode(AUTO_LED, OUTPUT);
+  pinMode(PROGRAM_LED, OUTPUT);
+  pinMode(MANUAL_BUTTON, INPUT);
+  pinMode(ENTER_BUTTON, INPUT);
+  pinMode(AUTO_BUTTON, INPUT);
+  pinMode(PROGRAM_BUTTON, INPUT);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  digitalWrite(MANUAL, HIGH);
-  digitalWrite(AUTO, LOW);
-  digitalWrite(PROGRAM, LOW);
-  delay(1000);
-  digitalWrite(MANUAL, LOW);
-  digitalWrite(AUTO, HIGH);
-  digitalWrite(PROGRAM, LOW);
-  delay(1000);
-  digitalWrite(MANUAL, LOW);
-  digitalWrite(AUTO, LOW);
-  digitalWrite(PROGRAM, HIGH);
-  delay(1000);
-
+  if(digitalRead(MANUAL_BUTTON) == HIGH){
+    digitalWrite(MANUAL_LED, HIGH);
+    digitalWrite(AUTO_LED, LOW);
+    digitalWrite(PROGRAM_LED, LOW);
+  }
+  if(digitalRead(AUTO_BUTTON) == HIGH){
+    digitalWrite(MANUAL_LED, LOW);
+    digitalWrite(AUTO_LED, HIGH);
+    digitalWrite(PROGRAM_LED, LOW);
+  }
+  if(digitalRead(PROGRAM_BUTTON) == HIGH){
+    digitalWrite(MANUAL_LED, LOW);
+    digitalWrite(AUTO_LED, LOW);
+    digitalWrite(PROGRAM_LED, HIGH);
+  }
 }
