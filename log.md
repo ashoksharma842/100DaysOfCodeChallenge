@@ -35,3 +35,10 @@ After skipping the reset step, I2C configured properly.
 A new folder/repo is made for loggin progress. So it can be seen on git hub.
 For now just copied the code files and not the whole project.
 
+### Day 5: 14-02-2022
+
+**Today's Progress**: Read baromatric pressure sensor's ID using I2C.
+
+**Thoughts:** To confirm the working of Sensor, first sensor is tested with
+standard arduino code with esp32. It was working fine.
+Then the I2C read code (bare metal) was made on Nuvoton.
