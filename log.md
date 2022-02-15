@@ -42,3 +42,9 @@ For now just copied the code files and not the whole project.
 **Thoughts:** To confirm the working of Sensor, first sensor is tested with
 standard arduino code with esp32. It was working fine.
 Then the I2C read code (bare metal) was made on Nuvoton.
+### Day 6: 15-02-2022
+
+**Today's Progress**: Tried I2C communication with interrupt.
+
+**Thoughts:** I2C remains stuck in interrupt. There is no wey to clear the interrupt.
+Will investigate how the example codes get out of interrupt tomorrow and implement that.
