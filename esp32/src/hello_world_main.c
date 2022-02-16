@@ -1,44 +1,53 @@
-/* Hello World Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
+#include <driver/i2c.h>
+#include <esp_log.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_system.h"
-#include "esp_spi_flash.h"
-#include "esp_task_wdt.h"
+#include "sdkconfig.h"
+#include <string.h>
 
-void app_main()
-{
-    esp_task_wdt_deinit();
-    printf("Hello world!\n");
+#define SDA_PIN GPIO_NUM_21
+#define SCL_PIN GPIO_NUM_22
 
-    /* Print chip information */
-    esp_chip_info_t chip_info;
-    esp_chip_info(&chip_info);
-    printf("This is ESP32 chip with %d CPU cores, WiFi%s%s, ",
-            chip_info.cores,
-            (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
-            (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
+static char tag[] = "i2cscanner";
 
-    printf("silicon revision %d, ", chip_info.revision);
+void app_main(void) {
+	ESP_LOGD(tag, ">> i2cScanner");
+	i2c_config_t conf;
+    memset(&conf,0,sizeof(i2c_config_t));
+	conf.mode = I2C_MODE_MASTER;
+	conf.sda_io_num = SDA_PIN;
+	conf.scl_io_num = SCL_PIN;
+	conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.master.clk_speed = 100000;
+    conf.clk_flags = 0;
+	i2c_param_config(I2C_NUM_0, &conf);
 
-    printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
-            (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
+	i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0);
 
-    /*for (int i = 10; i >= 0; i--) {
-        printf("Restarting in %d seconds...\n", i);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-    printf("Restarting now.\n");
-    fflush(stdout);
-    esp_restart();*/
-    while(1){
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
+	int i;
+	esp_err_t espRc;
+	printf("     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f\n");
+	printf("00:         ");
+	for (i=3; i< 0x78; i++) {
+		i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+		i2c_master_start(cmd);
+		i2c_master_write_byte(cmd, (i << 1) | I2C_MASTER_WRITE, 1 /* expect ack */);
+		i2c_master_stop(cmd);
+
+		espRc = i2c_master_cmd_begin(I2C_NUM_0, cmd, 10/portTICK_PERIOD_MS);
+		if (i%16 == 0) {
+			printf("\n%.2x:", i);
+		}
+		if (espRc == 0) {
+			printf(" %.2x", i);
+		} else {
+			printf(" --");
+		}
+		//ESP_LOGD(tag, "i=%d, rc=%d (0x%x)", i, espRc, espRc);
+		i2c_cmd_link_delete(cmd);
+	}
+	printf("\n");
+	vTaskDelete(NULL);
 }
