@@ -65,3 +65,10 @@ also the pin numbers of mudule are confusing.
 
 **Thoughts:** Didn't work. unable to locate the cofig structure!
 not sure why.
+
+### Day 9: 18-02-2022
+
+**Today's Progress**: Worked on Make files
+
+**Thoughts:** Read the GNU manual. Got to know how the make files work.
+Not fully but now I have working knowledge of how it works.
