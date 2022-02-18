@@ -58,3 +58,10 @@ Will investigate how the example codes get out of interrupt tomorrow and impleme
 tested the example code from koblan, worked ok after few trials.
 The i2c struct needs to be initialized to zero in order to work.
 also the pin numbers of mudule are confusing.
+
+### Day 8: 17-02-2022
+
+**Today's Progress**: Tried DAC with esp32.
+
+**Thoughts:** Didn't work. unable to locate the cofig structure!
+not sure why.
